@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vecindar — Directorio Digital del Barrio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde:#0d9488; --verde-oscuro:#0f766e; --verde-claro:#f0fdfa;
+  --terracota:#c2410c; --terracota-claro:#ea580c;
+  --crema:#fff7ed; --crema-oscura:#ffedd5;
+  --gris-900:#111827; --gris-700:#374151; --gris-500:#6b7280;
+  --gris-300:#d1d5db; --gris-100:#f3f4f6; --blanco:#ffffff;
+  --sombra:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -2px rgba(0,0,0,0.1);
+  --sombra-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.1);
+  --radio:12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; background:var(--crema); color:var(--gris-900); line-height:1.6; }
+
+.navbar { background:var(--blanco); border-bottom:1px solid var(--gris-300); position:sticky; top:0; z-index:1000; box-shadow:var(--sombra); }
+.nav-container { max-width:1200px; margin:0 auto; padding:0 1rem; display:flex; align-items:center; justify-content:space-between; height:72px; }
+.nav-left { display:flex; align-items:center; gap:0.75rem; }
+.nav-center { display:flex; align-items:center; }
+.nav-right { display:flex; align-items:center; gap:0.75rem; }
+.logo-mc { height:44px; width:auto; cursor:pointer; display:block; }
+.logo-bog { height:36px; width:auto; display:block; }
+.logo-text { font-weight:800; font-size:1.15rem; color:var(--verde); cursor:pointer; text-decoration:none; letter-spacing:-0.3px; }
+.nav-links { display:flex; gap:0.25rem; }
+.nav-btn { background:transparent; border:none; padding:0.5rem 0.85rem; border-radius:var(--radio); font-family:inherit; font-size:0.85rem; font-weight:600; color:var(--gris-700); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.nav-btn:hover { background:var(--gris-100); color:var(--verde); }
+.nav-btn.active { background:var(--verde); color:white; }
+.menu-toggle { display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--gris-700); }
+
+@media (max-width:768px) {
+  .nav-container { height:60px; }
+  .logo-mc { height:34px; }
+  .logo-bog { height:28px; }
+  .nav-links { display:none; position:absolute; top:60px; left:0; right:0; background:var(--blanco); flex-direction:column; padding:1rem; border-bottom:1px solid var(--gris-300); box-shadow:var(--sombra-lg); z-index:999; }
+  .nav-links.open { display:flex; }
+  .menu-toggle { display:block; }
+  .nav-center { display:none; }
+}
+
+.container { max-width:1200px; margin:0 auto; padding:1.5rem 1rem; }
+.section-title { font-size:1.6rem; font-weight:700; margin-bottom:0.4rem; color:var(--gris-900); }
+.section-subtitle { color:var(--gris-500); margin-bottom:1.5rem; font-size:0.95rem; }
+
+.view { display:none; animation:fadeIn 0.3s ease; }
+.view.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.hero { background:linear-gradient(135deg,var(--verde) 0%,var(--verde-oscuro) 100%); color:white; padding:3.5rem 1rem; text-align:center; border-radius:0 0 24px 24px; margin-bottom:1.5rem; }
+.hero h1 { font-size:2.4rem; font-weight:800; margin-bottom:0.6rem; letter-spacing:-1px; }
+.hero-sub { font-size:1.15rem; opacity:0.95; font-weight:500; }
+.hero-sub2 { font-size:1rem; opacity:0.85; margin-top:0.3rem; font-weight:400; }
+
+.anclas-bar { background:var(--blanco); border:1px solid var(--gris-300); border-radius:var(--radio); padding:0.75rem 1rem; margin-bottom:2rem; box-shadow:var(--sombra); display:flex; gap:0.5rem; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; position:sticky; top:72px; z-index:100; }
+.anclas-bar::-webkit-scrollbar { display:none; }
+.ancla-btn { flex-shrink:0; background:var(--gris-100); border:none; padding:0.5rem 1rem; border-radius:8px; font-family:inherit; font-size:0.85rem; font-weight:600; color:var(--gris-700); cursor:pointer; transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; gap:0.35rem; }
+.ancla-btn:hover { background:var(--verde); color:white; }
+.ancla-btn .emoji { font-size:1rem; }
+@media (max-width:768px){ .anclas-bar { top:60px; padding:0.6rem 0.75rem; } }
+
+.btn-inicio { display:inline-flex; align-items:center; gap:0.4rem; background:var(--verde); color:white; padding:0.6rem 1.2rem; border-radius:var(--radio); font-family:inherit; font-size:0.9rem; font-weight:700; cursor:pointer; transition:background 0.2s; border:none; margin-bottom:1.5rem; }
+.btn-inicio:hover { background:var(--verde-oscuro); }
+
+.grid-negocios { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1.25rem; }
+.card-negocio { background:var(--blanco); border-radius:var(--radio); overflow:hidden; box-shadow:var(--sombra); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; border:1px solid var(--gris-300); }
+.card-negocio:hover { transform:translateY(-4px); box-shadow:var(--sombra-lg); }
+.card-img-container { position:relative; width:100%; height:190px; overflow:hidden; background:var(--gris-100); }
+.card-img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; opacity:0; transition:opacity 0.8s ease-in-out; }
+.card-img.active { opacity:1; }
+.card-badge { position:absolute; top:10px; left:10px; background:var(--terracota); color:white; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.card-body { padding:0.9rem; }
+.card-title { font-size:1rem; font-weight:700; margin-bottom:0.2rem; color:var(--gris-900); }
+.card-direccion { font-size:0.8rem; color:var(--gris-500); margin-bottom:0.6rem; display:flex; align-items:center; gap:0.2rem; }
+.card-productos { display:flex; flex-wrap:wrap; gap:0.3rem; }
+.tag-producto { background:var(--crema-oscura); color:var(--terracota); padding:0.15rem 0.5rem; border-radius:6px; font-size:0.72rem; font-weight:500; }
+
+.detalle-header { position:relative; height:300px; overflow:hidden; border-radius:var(--radio); margin-bottom:1.25rem; }
+.detalle-img { width:100%; height:100%; object-fit:cover; position:absolute; opacity:0; transition:opacity 1s ease; }
+.detalle-img.active { opacity:1; }
+.detalle-dots { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
+.dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.5); cursor:pointer; }
+.dot.active { background:white; }
+.detalle-content { background:var(--blanco); padding:1.75rem; border-radius:var(--radio); box-shadow:var(--sombra); border:1px solid var(--gris-300); }
+.detalle-cat { display:inline-block; background:var(--verde); color:white; padding:0.3rem 0.9rem; border-radius:20px; font-size:0.75rem; font-weight:700; margin-bottom:0.6rem; text-transform:uppercase; letter-spacing:0.5px; }
+.detalle-title { font-size:1.75rem; font-weight:800; margin-bottom:0.4rem; }
+.detalle-dir { font-size:0.95rem; color:var(--gris-500); margin-bottom:1.25rem; display:flex; align-items:center; gap:0.4rem; }
+.detalle-section { margin-bottom:1.25rem; }
+.detalle-section h3 { font-size:1rem; font-weight:700; margin-bottom:0.6rem; color:var(--gris-700); }
+.lista-productos { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:0.4rem; }
+.lista-productos li { background:var(--gris-100); padding:0.5rem 0.9rem; border-radius:8px; font-size:0.85rem; border-left:3px solid var(--verde); }
+.btn-maps { display:inline-flex; align-items:center; gap:0.4rem; background:var(--terracota); color:white; padding:0.65rem 1.25rem; border-radius:var(--radio); text-decoration:none; font-weight:600; transition:background 0.2s; border:none; cursor:pointer; font-size:0.9rem; }
+.btn-maps:hover { background:var(--terracota-claro); }
+.btn-volver { background:var(--gris-100); color:var(--gris-700); padding:0.5rem 1rem; border:none; border-radius:var(--radio); cursor:pointer; font-weight:600; margin-bottom:1rem; font-family:inherit; font-size:0.9rem; }
+.btn-volver:hover { background:var(--gris-300); }
+
+.grid-categorias { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:1rem; margin-bottom:2rem; }
+.cat-card { background:var(--blanco); border:2px solid var(--gris-300); border-radius:var(--radio); padding:1.25rem 0.75rem; text-align:center; cursor:pointer; transition:all 0.2s; }
+.cat-card:hover { border-color:var(--verde); transform:translateY(-3px); box-shadow:var(--sombra); }
+.cat-card.active { border-color:var(--verde); background:var(--verde-claro); }
+.cat-icon { font-size:1.8rem; margin-bottom:0.4rem; }
+.cat-name { font-weight:700; font-size:0.85rem; color:var(--gris-700); }
+.cat-count { font-size:0.7rem; color:var(--gris-500); margin-top:0.2rem; }
+.search-cat { width:100%; max-width:400px; padding:0.65rem 1rem; border:1px solid var(--gris-300); border-radius:var(--radio); font-family:inherit; font-size:0.95rem; margin-bottom:1.25rem; outline:none; }
+.search-cat:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(13,148,136,0.1); }
+.btn-limpiar { background:none; border:1px solid var(--gris-300); color:var(--gris-500); padding:0.5rem 1rem; border-radius:var(--radio); cursor:pointer; font-family:inherit; margin-left:0.5rem; font-weight:600; }
+.btn-limpiar:hover { border-color:var(--gris-500); color:var(--gris-700); }
+
+.form-busca { background:var(--blanco); padding:2rem; border-radius:var(--radio); box-shadow:var(--sombra); border:1px solid var(--gris-300); max-width:550px; margin:0 auto 2rem; }
+.form-group { margin-bottom:1.1rem; }
+.form-group label { display:block; font-weight:700; margin-bottom:0.4rem; color:var(--gris-700); font-size:0.85rem; }
+.form-group input, .form-group select { width:100%; padding:0.7rem 1rem; border:1px solid var(--gris-300); border-radius:var(--radio); font-family:inherit; font-size:0.95rem; outline:none; background:var(--blanco); }
+.form-group input:focus, .form-group select:focus { border-color:var(--verde); box-shadow:0 0 0 3px rgba(13,148,136,0.1); }
+.btn-submit { width:100%; background:var(--verde); color:white; padding:0.8rem; border:none; border-radius:var(--radio); font-family:inherit; font-size:1rem; font-weight:700; cursor:pointer; transition:background 0.2s; }
+.btn-submit:hover { background:var(--verde-oscuro); }
+.resultados-cercanos { max-width:600px; margin:0 auto; }
+.card-cercano { background:var(--blanco); border:1px solid var(--gris-300); border-radius:var(--radio); padding:1.1rem; margin-bottom:0.9rem; cursor:pointer; transition:all 0.2s; display:flex; justify-content:space-between; align-items:center; }
+.card-cercano:hover { border-color:var(--verde); box-shadow:var(--sombra); transform:translateX(4px); }
+.cercano-info h4 { font-size:1rem; font-weight:700; color:var(--gris-900); margin-bottom:0.2rem; }
+.cercano-info p { font-size:0.8rem; color:var(--gris-500); }
+.cercano-dist { text-align:right; }
+.dist-valor { font-size:1.15rem; font-weight:800; color:var(--verde); }
+.dist-label { font-size:0.7rem; color:var(--gris-500); text-transform:uppercase; letter-spacing:0.5px; }
+.orden-badge { background:var(--crema-oscura); color:var(--terracota); padding:0.15rem 0.5rem; border-radius:4px; font-size:0.65rem; font-weight:700; margin-bottom:0.2rem; display:inline-block; }
+
+.seccion-noticias { margin-top:2.5rem; padding-top:1rem; }
+.noticias-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1.25rem; }
+.card-noticia { background:var(--blanco); border-radius:var(--radio); overflow:hidden; box-shadow:var(--sombra); border:1px solid var(--gris-300); display:flex; flex-direction:column; }
+.noticia-img { width:100%; height:170px; object-fit:cover; background:var(--gris-100); }
+.noticia-body { padding:1.1rem; flex:1; display:flex; flex-direction:column; }
+.noticia-fecha { font-size:0.75rem; color:var(--terracota); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; }
+.noticia-title { font-size:1rem; font-weight:700; margin-bottom:0.4rem; color:var(--gris-900); }
+.noticia-text { font-size:0.85rem; color:var(--gris-500); line-height:1.6; flex:1; }
+.noticia-tag { display:inline-block; background:var(--verde); color:white; padding:0.2rem 0.6rem; border-radius:4px; font-size:0.7rem; font-weight:600; margin-top:0.6rem; align-self:flex-start; }
+
+.seccion-contacto { margin-top:2.5rem; background:var(--blanco); padding:1.75rem; border-radius:var(--radio); box-shadow:var(--sombra); border:1px solid var(--gris-300); }
+.contacto-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+.contacto-info h3 { font-size:1.15rem; font-weight:700; margin-bottom:0.75rem; }
+.contacto-info p { color:var(--gris-500); margin-bottom:0.75rem; font-size:0.9rem; line-height:1.6; }
+.contacto-form .form-group { margin-bottom:0.85rem; }
+.contacto-form input, .contacto-form select, .contacto-form textarea { width:100%; padding:0.65rem; border:1px solid var(--gris-300); border-radius:8px; font-family:inherit; font-size:0.9rem; outline:none; }
+.contacto-form textarea { resize:vertical; min-height:80px; }
+.contacto-form input:focus, .contacto-form select:focus, .contacto-form textarea:focus { border-color:var(--verde); }
+
+@media (max-width:768px) {
+  .contacto-grid { grid-template-columns:1fr; gap:1.25rem; }
+  .hero h1 { font-size:1.8rem; }
+  .hero-sub { font-size:1rem; }
+  .grid-negocios { grid-template-columns:1fr; }
+  .detalle-header { height:220px; }
+  .detalle-title { font-size:1.4rem; }
+  .form-busca { padding:1.25rem; }
+  .grid-categorias { grid-template-columns:repeat(2,1fr); }
+}
+
+footer { text-align:center; padding:1.75rem 1rem; color:var(--gris-500); font-size:0.8rem; margin-top:2rem; border-top:1px solid var(--gris-300); background:var(--blanco); }
+.hidden { display:none !important; }
+.text-center { text-align:center; }
+</style>
+</head>
+<body>
+<nav class="navbar">
+<div class="nav-container">
+<div class="nav-left">
+<img class="logo-mc" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Bogot%C3%A1_Mi_Ciudad_Mi_Casa.png/320px-Bogot%C3%A1_Mi_Ciudad_Mi_Casa.png" alt="Bogota Mi Ciudad Mi Casa">
+<div class="nav-center">
+<span class="logo-text" onclick="navigate('home')">Vecindar</span>
+</div>
+</div>
+<div class="nav-links" id="navLinks">
+<button class="nav-btn active" onclick="navigate('home')" data-view="home">🏠 Inicio</button>
+<button class="nav-btn" onclick="navigate('categorias')" data-view="categorias">Buscar por Categorias</button>
+<button class="nav-btn" onclick="navigate('busca')" data-view="busca">Busca algo?</button>
+</div>
+<div class="nav-right">
+<img class="logo-bog" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Bogot%C3%A1_logo.svg/200px-Bogot%C3%A1_logo.svg.png" alt="Bogota">
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+</div>
+</div>
+</nav>
+
+<div id="app">
+<div class="view active" id="view-home">
+<div class="hero">
+<h1>Vecindar</h1>
+<div class="hero-sub">El directorio digital del barrio</div>
+<div class="hero-sub2">Encuentra, conecta y participa</div>
+</div>
+<div class="container">
+<div class="anclas-bar">
+<button class="ancla-btn" onclick="scrollToId('negocios')"><span class="emoji">🏪</span> Negocios</button>
+<button class="
